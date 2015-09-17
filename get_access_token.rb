@@ -24,7 +24,7 @@ verifier = STDIN.readline
 begin
   access_token = request_token.get_access_token(oauth_verifier: verifier)
 rescue => ex
-  puts ex.super.message
+  puts ex.message
   exit
 end
 

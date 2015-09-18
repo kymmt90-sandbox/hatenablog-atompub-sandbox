@@ -12,7 +12,7 @@ consumer = OAuth::Consumer.new(CONSUMER_KEY,
                                CONSUMER_SEC,
                                oauth_callback: 'oob',
                                site: 'https://www.hatena.com',
-                               request_token_url: '/oauth/initiate',
+                               request_token_url: '/oauth/initiate?scope=read_public%2Cread_private%2Cwrite_public%2Cwrite_private',
                                access_token_url: '/oauth/token')
 
 request_token = consumer.get_request_token

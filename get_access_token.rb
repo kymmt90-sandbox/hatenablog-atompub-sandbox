@@ -19,12 +19,16 @@ request_token = consumer.get_request_token
 puts "Visit this website and get verifier: #{request_token.authorize_url}"
 
 print 'Enter the verifier:'
-verifier = STDIN.readline
+verifier = (STDIN.readline).chomp
+
+# hatena returns "parameter_rejected" if "oauth_callback" is in the request header
+consumer.options.delete(:oauth_callback)
 
 begin
   access_token = request_token.get_access_token(oauth_verifier: verifier)
-rescue => ex
-  puts ex.message
+rescue => problem
+  warn problem
+  warn problem.request.body
   exit
 end
 

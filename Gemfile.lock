@@ -1,0 +1,17 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    libxml-ruby (2.8.0)
+    oauth (0.4.7)
+    ratom (0.9.0)
+      libxml-ruby (~> 2.6)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  oauth
+  ratom
+
+BUNDLED WITH
+   1.10.6

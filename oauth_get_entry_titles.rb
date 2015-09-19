@@ -3,8 +3,8 @@
 
 # Get hatenablog entriy titles
 
+require 'atom'
 require 'oauth'
-require 'rexml/document'
 
 CONSUMER_KEY = ARGV[0]
 CONSUMER_SEC = ARGV[1]
@@ -13,26 +13,24 @@ ACCESS_TOKEN_SEC = ARGV[3]
 USER_ID = ARGV[4]
 BLOG_ID = ARGV[5]
 
+COLLECTION_URI = "https://blog.hatena.ne.jp/#{USER_ID}/#{BLOG_ID}/atom/entry"
+
 consumer = OAuth::Consumer.new(CONSUMER_KEY, CONSUMER_SEC)
 access_token = OAuth::AccessToken.new(consumer, ACCESS_TOKEN, ACCESS_TOKEN_SEC)
 
-url = "https://blog.hatena.ne.jp/#{USER_ID}/#{BLOG_ID}/atom/entry"
+next_page_url = COLLECTION_URI % [USER_ID, BLOG_ID]
 loop do
   begin
-  response = access_token.get(url)
+  response = access_token.get(next_page_url)
   rescue => problem
     puts problem
   end
 
-  doc = REXML::Document.new(response.body)
-  puts doc
-  doc.each_element('/feed/entry/title') do |e|
-    puts e.text
-  end
+  feed = Atom::Feed.load_feed(response.body)
+  feed.each_entry { |entry| puts entry.title }
 
-  exit if doc.get_elements('/feed/link').to_a.all? { |e| e.attribute('rel').value != 'next' }
-
-  url = doc.elements['/feed/link[2]'].attribute('href').to_s
+  break if feed.links.next_page.nil?
+  next_page_url = feed.links.next_page.to_s
 
   sleep 1
 end
